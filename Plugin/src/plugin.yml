@@ -1,0 +1,14 @@
+name: EventOrderRP
+version: 1.0
+author: Pingouin - Florent Martini
+main: fr.pingouin.plugin.Main
+description: Plugin visant à gérer automatiquement les tours des joueurs lors de supervisions.
+commands:
+  ping:
+    description: Commande pour vérifier l'activité du plugin.
+  eventCreate:
+    description: Création du scoreboard.
+  eventEnd:
+    description: Met fin à l'event.
+  eventNext:
+    description: Passe au joueur suivant.
