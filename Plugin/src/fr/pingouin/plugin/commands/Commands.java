@@ -128,7 +128,7 @@ public class Commands implements CommandExecutor {
 
             int nextPlayer = 0;
             for(int i = 2; i<Data.listEvent.get(indice).size(); i++) { //On récupère l'indice du prochain joueur qui devra jouer
-                if(Data.listEvent.get(indice).get(1) == Data.listEvent.get(indice).get(i)) {
+                if(Data.listEvent.get(indice).get(1).equals(Data.listEvent.get(indice).get(i))) {
                     if(i == Data.listEvent.get(indice).size()-1) nextPlayer = 2;
                     else nextPlayer = i+1;
                     break;
