@@ -136,16 +136,16 @@ public class Commands implements CommandExecutor {
             }
 
             Score score;
-            for(int i = 2; i<Data.listEvent.get(indice).size(); i++) {
-                if(i==nextPlayer) {
-                    score = objective.getScore(ChatColor.RED + Data.listEvent.get(indice).get(i));
-                    Data.listEvent.get(indice).set(1, Data.listEvent.get(indice).get(i));
+            for(int i = 2; i<Data.listEvent.get(indice).size(); i++) { //On parcourt tous les joueurs de l'event
+                if(i==nextPlayer) { //Juste pour joueur qui doit jouer
+                    score = objective.getScore(ChatColor.RED + Data.listEvent.get(indice).get(i));  //Affichage du pseudo en rouge
+                    Data.listEvent.get(indice).set(1, Data.listEvent.get(indice).get(i));              //On met à jour le joueur qui doit jouer dans l'array
                 }
-                else score = objective.getScore(Data.listEvent.get(indice).get(i));
-                score.setScore(Data.listEvent.get(indice).size()-i);
-                if(Bukkit.getPlayer(Data.listEvent.get(indice).get(i)) == null) sender.sendMessage(ChatColor.DARK_BLUE + "Erreur : Joueur " + Data.listEvent.get(indice).get(i) + " non reconnu.");
+                else score = objective.getScore(Data.listEvent.get(indice).get(i));                    //Pour les autres, on affiche sans couleur
+                score.setScore(Data.listEvent.get(indice).size()-i);                                   //On ajoute le score dans l'ordre décroissant -> Gère l'ordre d'affichage.
+                if(Bukkit.getPlayer(Data.listEvent.get(indice).get(i)) == null) sender.sendMessage(ChatColor.DARK_BLUE + "Erreur : Joueur " + Data.listEvent.get(indice).get(i) + " non reconnu."); //Si le joueur n'est pas trouvé
                 else {
-                    Bukkit.getPlayer(Data.listEvent.get(indice).get(i)).setScoreboard(scoreboard);
+                    Bukkit.getPlayer(Data.listEvent.get(indice).get(i)).setScoreboard(scoreboard); //Sinon on lui affiche son scoreboard
                 }
             }
 
