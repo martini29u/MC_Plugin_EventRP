@@ -13,6 +13,8 @@ public class Main extends JavaPlugin {
         getCommand("eventCreate").setExecutor(new Commands());
         getCommand("eventEnd").setExecutor(new Commands());
         getCommand("eventNext").setExecutor(new Commands());
+        getCommand("eventJoin").setExecutor(new Commands());
+        getCommand("eventLeave").setExecutor(new Commands());
     }
 
     @Override

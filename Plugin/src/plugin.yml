@@ -12,3 +12,7 @@ commands:
     description: Met fin à l'event.
   eventNext:
     description: Passe au joueur suivant.
+  eventJoin:
+    description: Ajoute le joueur à l'event.
+  eventLeave:
+    description: Supprime le joueur de l'event.
