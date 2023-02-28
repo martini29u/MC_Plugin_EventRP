@@ -21,5 +21,4 @@ public class Main extends JavaPlugin {
     public void onDisable() {
         Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.BLUE + "EventOrderRP plugin OFF");
     }
-
 }

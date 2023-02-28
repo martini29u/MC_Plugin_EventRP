@@ -172,7 +172,6 @@ public class Commands implements CommandExecutor {
                 return true;
             }
 
-            sender.sendMessage(Data.listEvent.get(0).get(Data.listEvent.get(0).size()-1));
             for(int i = 0; i<Data.listEvent.size(); i++) { //On parcourt tous les event qu'on connait
                 if(Data.listEvent.get(i).get(0).equals(args[0])) { //Une fois qu'on trouve le bon
                     for(int j=2; j<Data.listEvent.get(i).size(); j++) { //On parcourt les joueurs de l'event
