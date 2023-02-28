@@ -2,7 +2,7 @@ name: EventOrderRP
 version: 1.0
 author: Pingouin - Florent Martini
 main: fr.pingouin.plugin.Main
-description: Plugin visant à gérer automatiquement les tours des joueurs lors de supervisions.
+description: Plugin visant à gérer automatiquement les tours des joueurs lors de supervisions ou RP Combat.
 commands:
   ping:
     description: Commande pour vérifier l'activité du plugin.
