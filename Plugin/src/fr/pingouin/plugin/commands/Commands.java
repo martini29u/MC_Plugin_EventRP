@@ -35,20 +35,19 @@ public class Commands implements CommandExecutor {
                 sender.sendMessage(ChatColor.DARK_BLUE + "Erreur : Ajoutez au moins deux membres de l'event en paramètre.");
                 return true;
             }
-            ScoreboardManager manager = Bukkit.getScoreboardManager();
-            Scoreboard scoreboard = manager.getMainScoreboard();
+            if(Data.scoreboard == null) Data.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 
             Objective objective = null;
             String eventName = " ";
             for(int i = 0; i<Data.listEvent.size()+1; i++) { //Boucle infinie
-                if(scoreboard.getObjective("event"+ i)==null) { //On cherche le premier event disponible
+                if(Data.scoreboard.getObjective("event"+ i)==null) { //On cherche le premier event disponible
                     eventName = "event"+i;  //Nom de l'event
                     ArrayList<String> eventArray = new ArrayList<>();   //Création de l'array qui va stocker l'event
                     eventArray.add(eventName);                          //On ajoute le nom de l'event au début
                     eventArray.add(args[0]);                            //On ajoute le Joueur qui doit jouer ensuite
                     eventArray.addAll(Arrays.asList(args));             //On ajoute finalement tous les joueurs donnés en paramètre.
-                    Data.listEvent.add(eventArray);           //On ajoute l'array dans notre array global.
-                    objective = scoreboard.registerNewObjective(eventName, "dummy");    //On créer l'event dans MC
+                    Data.listEvent.add(eventArray);                     //On ajoute l'array dans notre array global.
+                    objective = Data.scoreboard.registerNewObjective(eventName, "dummy");    //On créer l'event dans MC
                     break;
                 }
             }
@@ -68,7 +67,7 @@ public class Commands implements CommandExecutor {
                 score.setScore(args.length-i);                                 //On ajoute le score dans l'ordre décroissant -> Gère l'ordre d'affichage.
                 if(Bukkit.getPlayer(args[i]) == null) sender.sendMessage(ChatColor.DARK_BLUE + "Erreur : Joueur " + args[i] + " non reconnue."); //Si le joueur n'est pas trouvé
                 else {
-                    Bukkit.getPlayer(args[i]).setScoreboard(scoreboard); //Sinon on lui affiche le scoreboard
+                    Bukkit.getPlayer(args[i]).setScoreboard(Data.scoreboard); //Sinon on lui affiche le scoreboard
                 }
             }
         }
@@ -82,13 +81,14 @@ public class Commands implements CommandExecutor {
                 sender.sendMessage(ChatColor.DARK_BLUE + "Erreur : Ajoutez uniquement le nom de l'event à supprimer en paramètre.");
                 return true;
             }
-            ScoreboardManager manager = Bukkit.getScoreboardManager();
-            Scoreboard scoreboard = manager.getMainScoreboard();
+            if(Data.scoreboard == null) Data.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 
-            if(scoreboard.getObjective(args[0]) == null) { //Si event inconnu
+            if(Data.scoreboard.getObjective(args[0]) == null) { //Si event inconnu
                 sender.sendMessage(ChatColor.DARK_BLUE + "Erreur : Event non reconnue.");
                 return true;
             }
+
+            removeScoreboard(Data.scoreboard, args[0], sender); //On supprime l'event sur MC
 
             for(int i = 0; i<Data.listEvent.size(); i++) { //On parcourt tous les event qu'on connait
                 if(Data.listEvent.get(i).get(0).equals(args[0])) { //Une fois qu'on trouve le bon
@@ -97,7 +97,6 @@ public class Commands implements CommandExecutor {
                 }
             }
 
-            scoreboard.getObjective(args[0]).unregister(); //On supprime l'event sur MC
             sender.sendMessage(ChatColor.BLUE + "Event supprimé.");
         }
 
@@ -110,12 +109,11 @@ public class Commands implements CommandExecutor {
                 sender.sendMessage(ChatColor.DARK_BLUE + "Erreur : Ajoutez uniquement le nom de l'event associé en paramètre.");
                 return true;
             }
-            ScoreboardManager manager = Bukkit.getScoreboardManager();
-            Scoreboard scoreboard = manager.getMainScoreboard();
-            scoreboard.getObjective(args[0]).unregister(); //On supprime l'event MC...
+            if(Data.scoreboard == null) Data.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+            removeScoreboard(Data.scoreboard, args[0], sender); //On supprime l'event MC...
 
             //Pour le refaire
-            affichageScoreboard(scoreboard, args[0], sender, true);
+            printScoreboard(Data.scoreboard, args[0], sender, true);
         }
 
         /* ****************************************** */
@@ -131,10 +129,9 @@ public class Commands implements CommandExecutor {
                 return true;
             }
 
-            ScoreboardManager manager = Bukkit.getScoreboardManager();
-            Scoreboard scoreboard = manager.getMainScoreboard();
+            if(Data.scoreboard == null) Data.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 
-            if(scoreboard.getObjective(args[0]) == null) { //Si event inconnu
+            if(Data.scoreboard.getObjective(args[0]) == null) { //Si event inconnu
                 sender.sendMessage(ChatColor.DARK_BLUE + "Erreur : Event non reconnue.");
                 return true;
             }
@@ -146,9 +143,9 @@ public class Commands implements CommandExecutor {
                 }
             }
 
-            scoreboard.getObjective(args[0]).unregister(); //On supprime l'event MC...
+            removeScoreboard(Data.scoreboard, args[0], sender); //On supprime l'event MC...
             //Pour le refaire
-            affichageScoreboard(scoreboard, args[0], sender, false);
+            printScoreboard(Data.scoreboard, args[0], sender, false);
         }
 
         /* ****************************************** */
@@ -164,10 +161,9 @@ public class Commands implements CommandExecutor {
                 return true;
             }
 
-            ScoreboardManager manager = Bukkit.getScoreboardManager();
-            Scoreboard scoreboard = manager.getMainScoreboard();
+            if(Data.scoreboard == null) Data.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 
-            if(scoreboard.getObjective(args[0]) == null) { //Si event inconnu
+            if(Data.scoreboard.getObjective(args[0]) == null) { //Si event inconnu
                 sender.sendMessage(ChatColor.DARK_BLUE + "Erreur : Event non reconnue.");
                 return true;
             }
@@ -187,15 +183,15 @@ public class Commands implements CommandExecutor {
                 }
             }
 
-            scoreboard.getObjective(args[0]).unregister(); //On supprime l'event MC...
+            removeScoreboard(Data.scoreboard, args[0], sender); //On supprime l'event MC...
             //Pour le refaire
-            affichageScoreboard(scoreboard, args[0], sender, false);
+            printScoreboard(Data.scoreboard, args[0], sender, false);
         }
 
         return false;
     }
 
-    private void affichageScoreboard(Scoreboard scoreboard, String eventname, CommandSender sender, boolean next) {
+    private void printScoreboard(Scoreboard scoreboard, String eventname, CommandSender sender, boolean next) {
         Objective objective = scoreboard.registerNewObjective(eventname, "dummy");
         objective.setDisplayName(ChatColor.DARK_RED + "Ordre " + eventname);
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
@@ -230,6 +226,24 @@ public class Commands implements CommandExecutor {
             if(Bukkit.getPlayer(Data.listEvent.get(indice).get(i)) == null) sender.sendMessage(ChatColor.DARK_BLUE + "Erreur : Joueur " + Data.listEvent.get(indice).get(i) + " non reconnu."); //Si le joueur n'est pas trouvé
             else {
                 Bukkit.getPlayer(Data.listEvent.get(indice).get(i)).setScoreboard(scoreboard); //Sinon on lui affiche son scoreboard
+            }
+        }
+    }
+
+    private void removeScoreboard(Scoreboard scoreboard, String eventname, CommandSender sender) {
+        Data.scoreboard.getObjective(eventname).unregister();
+
+        int indice = 0;
+        for(int i = 0; i<Data.listEvent.size(); i++) { //On récupère l'indice de l'event en question dans notre array
+            if(Data.listEvent.get(i).get(0).equals(eventname)) {
+                indice = i;
+                break;
+            }
+        }
+
+        for (int i = 2; i < Data.listEvent.get(indice).size(); i++) { //On change de scoreboard tous les joueurs
+            if(Bukkit.getPlayer(Data.listEvent.get(indice).get(i)) != null) {
+                Bukkit.getPlayer(Data.listEvent.get(indice).get(i)).setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
             }
         }
     }
