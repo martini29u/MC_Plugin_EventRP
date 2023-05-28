@@ -4,8 +4,12 @@ author: Pingouin - Florent Martini
 main: fr.pingouin.plugin.Main
 description: Plugin visant à gérer automatiquement les tours des joueurs lors de supervisions ou RP Combat.
 commands:
-  ping:
+  eventPing:
     description: Commande pour vérifier l'activité du plugin.
+  eventHelp:
+    description: Commande pour avoir la liste des commandes possibles.
+  eventList:
+    description: Commande pour avoir la liste des event en cours.
   eventCreate:
     description: Création du scoreboard.
   eventEnd:

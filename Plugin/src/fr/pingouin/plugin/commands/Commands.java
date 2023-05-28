@@ -4,6 +4,7 @@ package fr.pingouin.plugin.commands;
 /*         Auteur : Martini Florent           */
 /* ****************************************** */
 
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -24,7 +25,24 @@ public class Commands implements CommandExecutor {
         /*           Commande d'activité              */
         /* ****************************************** */
 
-        if(cmd.getName().equalsIgnoreCase("ping")) sender.sendMessage(ChatColor.BLUE + "EventOrderRP is enable !");
+        if(cmd.getName().equalsIgnoreCase("eventPing")) sender.sendMessage(ChatColor.BLUE + "EventOrderRP is enable !");
+
+        /* ****************************************** */
+        /*              Commande d'aide               */
+        /* ****************************************** */
+
+        if(cmd.getName().equalsIgnoreCase("eventHelp")) {
+            sender.sendMessage(ChatColor.DARK_BLUE + "========== " + ChatColor.BLUE + "EventOrderRP Commandes" + ChatColor.DARK_BLUE + " ==========");
+            sender.sendMessage(ChatColor.BLUE + "eventPing " + ChatColor.WHITE + ": Permet de voir si le plugin est actif.");
+            sender.sendMessage(ChatColor.BLUE + "eventHelp " + ChatColor.WHITE + ": Permet de voir les aides.");
+            sender.sendMessage(ChatColor.BLUE + "eventCreate " + ChatColor.WHITE + ": Permet de créer un event.");
+            sender.sendMessage(ChatColor.BLUE + "eventEnd " + ChatColor.WHITE + ": Permet de clore un event.");
+            sender.sendMessage(ChatColor.BLUE + "eventJoin " + ChatColor.WHITE + ": Permet de rejoindre un event.");
+            sender.sendMessage(ChatColor.BLUE + "eventLeave " + ChatColor.WHITE + ": Permet de quitter un event.");
+            sender.sendMessage(ChatColor.BLUE + "eventNext " + ChatColor.WHITE + ": Permet de passer au joueur suivant.");
+            sender.sendMessage(ChatColor.BLUE + "eventList " + ChatColor.WHITE + ": Permet de voir la liste des event en cours.");
+            sender.sendMessage(ChatColor.DARK_BLUE + "==========================================");
+        }
 
         /* ****************************************** */
         /*     Commande de création de l'event        */
@@ -42,10 +60,16 @@ public class Commands implements CommandExecutor {
             for(int i = 0; i<Data.listEvent.size()+1; i++) { //Boucle infinie
                 if(Data.scoreboard.getObjective("event"+ i)==null) { //On cherche le premier event disponible
                     eventName = "event"+i;  //Nom de l'event
-                    ArrayList<String> eventArray = new ArrayList<>();   //Création de l'array qui va stocker l'event
-                    eventArray.add(eventName);                          //On ajoute le nom de l'event au début
-                    eventArray.add(args[0]);                            //On ajoute le Joueur qui doit jouer ensuite
-                    eventArray.addAll(Arrays.asList(args));             //On ajoute finalement tous les joueurs donnés en paramètre.
+                    ArrayList<String> eventArray = new ArrayList<>();               //Création de l'array qui va stocker l'event
+                    eventArray.add(eventName);                                      //On ajoute le nom de l'event au début
+                    //On ajoute le Joueur qui doit jouer ensuite
+                    if(Bukkit.getPlayer(args[0]) == null) eventArray.add(args[0]); //Si le joueur n'est pas trouvé
+                    else eventArray.add(Bukkit.getPlayer(args[0]).getDisplayName());
+                    // On ajoute finalement tous les joueurs donnés en paramètre.
+                    for(int j=0; j<args.length; j++) {
+                        if(Bukkit.getPlayer(args[j]) == null) eventArray.add(args[j]); //Si le joueur n'est pas trouvé
+                        else eventArray.add(Bukkit.getPlayer(args[j]).getDisplayName());
+                    }
                     Data.listEvent.add(eventArray);                     //On ajoute l'array dans notre array global.
                     objective = Data.scoreboard.registerNewObjective(eventName, "dummy");    //On créer l'event dans MC
                     break;
@@ -78,7 +102,7 @@ public class Commands implements CommandExecutor {
 
         if(cmd.getName().equalsIgnoreCase("eventEnd")) {
             if(args.length != 1) { //Paramètre différent de 1
-                sender.sendMessage(ChatColor.DARK_BLUE + "Erreur : Ajoutez uniquement le nom de l'event à supprimer en paramètre.");
+                sender.sendMessage(ChatColor.DARK_BLUE + "Erreur : Ajoutez uniquement le nom de l'event associé en paramètre.");
                 return true;
             }
             if(Data.scoreboard == null) Data.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -175,6 +199,7 @@ public class Commands implements CommandExecutor {
                             if(Data.listEvent.get(i).get(1).equals(Data.listEvent.get(i).get(j))) { //On regarde si il est le joueur courant, si oui, on fait un next avant
                                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "eventNext " + Data.listEvent.get(i).get(0));
                             }
+                            Bukkit.getPlayer(Data.listEvent.get(i).get(j)).setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard()); //On lui enlève l'affichage
                             Data.listEvent.get(i).remove(j); //Et on le supprime
                             break;
                         }
@@ -186,6 +211,18 @@ public class Commands implements CommandExecutor {
             removeScoreboard(Data.scoreboard, args[0], sender); //On supprime l'event MC...
             //Pour le refaire
             printScoreboard(Data.scoreboard, args[0], sender, false);
+        }
+
+        /* ****************************************** */
+        /*           Commande de gestion              */
+        /* ****************************************** */
+
+        if(cmd.getName().equalsIgnoreCase("eventList")) {
+            String liste = "";
+            for(int i = 0; i<Data.listEvent.size(); i++) { //On parcourt tous les event qu'on connait
+                liste += Data.listEvent.get(i).get(0) + ", ";
+            }
+            sender.sendMessage(ChatColor.BLUE + "Liste des event en cours : " + ChatColor.WHITE + liste);
         }
 
         return false;

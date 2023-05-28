@@ -9,7 +9,9 @@ public class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.BLUE + "EventOrderRP plugin ON");
-        getCommand("ping").setExecutor(new Commands());
+        getCommand("eventPing").setExecutor(new Commands());
+        getCommand("eventHelp").setExecutor(new Commands());
+        getCommand("eventList").setExecutor(new Commands());
         getCommand("eventCreate").setExecutor(new Commands());
         getCommand("eventEnd").setExecutor(new Commands());
         getCommand("eventNext").setExecutor(new Commands());
